@@ -1,50 +1,69 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DATABASIS:ART // terminal pixel studio</title>
+  <title>BASIS ART // pixel studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/main.css">
 </head>
 <body data-mood="">
+
+  <div class="screen-glow" aria-hidden="true"></div>
+  <div class="crt-overlay"  aria-hidden="true"></div>
+
   <div id="app">
 
-    <!-- TOP BAR -->
+    <!-- ── TOP BAR ── -->
     <header id="topbar">
-      <div class="brand">DATABASIS:ART<span class="blink">_</span></div>
-      <div class="topbar-actions">
-        <button class="btn" id="btn-new" title="New canvas [Ctrl+N]">NEW</button>
-        <button class="btn" id="btn-import" title="Import image">IMPORT</button>
-        <div class="sep">|</div>
-        <button class="btn" id="btn-undo" title="Undo [Ctrl+Z]">UNDO</button>
-        <button class="btn" id="btn-redo" title="Redo [Ctrl+Y]">REDO</button>
-        <button class="btn" id="btn-clear" title="Clear canvas">CLEAR</button>
-        <div class="sep">|</div>
-        <button class="btn accent" id="btn-export-png" title="Export PNG [Ctrl+S]">PNG</button>
-        <button class="btn accent" id="btn-export-gif" title="Export GIF [Ctrl+G]">GIF</button>
+      <div class="brand">
+        <span class="brand-main">BASIS</span>
+        <span class="brand-sub">ART STUDIO</span>
       </div>
+
+      <div class="tb-sep"></div>
+
+      <button class="btn" id="btn-new"    title="New canvas [Ctrl+N]">NEW</button>
+      <button class="btn" id="btn-import" title="Import image">IMPORT</button>
+      <button class="btn" id="btn-undo"   title="Undo [Ctrl+Z]">UNDO</button>
+      <button class="btn" id="btn-redo"   title="Redo [Ctrl+Y]">REDO</button>
+      <button class="btn" id="btn-clear"  title="Clear canvas">CLEAR</button>
+
+      <div class="tb-sep"></div>
+
+      <button class="btn accent" id="btn-export-png" title="Export PNG [Ctrl+S]">&#8595; PNG</button>
+      <button class="btn accent" id="btn-export-gif" title="Export GIF [Ctrl+G]">&#8595; GIF</button>
+
       <input type="file" id="file-import" accept="image/*" style="display:none">
     </header>
 
     <div id="workspace">
 
-      <!-- LEFT PANEL -->
+      <!-- ── LEFT PANEL ── -->
       <aside id="panel-left">
 
-        <div class="panel-section">
-          <div class="panel-label">&gt; TOOLS</div>
+        <div class="ps">
+          <div class="ps-head">
+            <div class="ps-dots"><div class="ps-dot"></div><div class="ps-dot"></div><div class="ps-dot"></div></div>
+            <span class="ps-label">TOOLS</span>
+          </div>
           <div class="tool-grid">
-            <button class="tool-btn active" data-tool="pencil" title="Pencil [P]">&#9999;</button>
-            <button class="tool-btn" data-tool="fill"    title="Fill [F]">&#9619;</button>
-            <button class="tool-btn" data-tool="eraser"  title="Eraser [E]">&#9633;</button>
-            <button class="tool-btn" data-tool="eyedropper" title="Eyedropper [I]">&#9685;</button>
-            <button class="tool-btn" data-tool="line"    title="Line [L]">&#9585;</button>
-            <button class="tool-btn" data-tool="corrupt" title="Corrupt [X]">&#9618;</button>
+            <button class="tool-btn active" data-tool="pencil"     title="Pencil [P]"><span class="icon">&#9999;</span> DRAW</button>
+            <button class="tool-btn"        data-tool="fill"       title="Fill [F]"><span class="icon">&#9619;</span> FILL</button>
+            <button class="tool-btn"        data-tool="eraser"     title="Eraser [E]"><span class="icon">&#9633;</span> ERASE</button>
+            <button class="tool-btn"        data-tool="eyedropper" title="Eyedropper [I]"><span class="icon">&#9685;</span> PICK</button>
+            <button class="tool-btn"        data-tool="line"       title="Line [L]"><span class="icon">&#9585;</span> LINE</button>
+            <button class="tool-btn"        data-tool="corrupt"    title="Corrupt [X]"><span class="icon">&#9618;</span> GLITCH</button>
           </div>
         </div>
 
-        <div class="panel-section">
-          <div class="panel-label">&gt; CANVAS</div>
+        <div class="ps">
+          <div class="ps-head">
+            <div class="ps-dots"><div class="ps-dot"></div><div class="ps-dot"></div><div class="ps-dot"></div></div>
+            <span class="ps-label">CANVAS</span>
+          </div>
           <div class="input-row">
             <label>W</label>
             <input type="number" id="grid-w" value="32" min="4" max="128">
@@ -57,11 +76,14 @@
             <label>PX</label>
             <input type="number" id="cell-size" value="16" min="4" max="32" step="2">
           </div>
-          <button class="btn full-width" id="btn-resize">RESIZE</button>
+          <button class="btn full" id="btn-resize">RESIZE</button>
         </div>
 
-        <div class="panel-section">
-          <div class="panel-label">&gt; MOOD</div>
+        <div class="ps">
+          <div class="ps-head">
+            <div class="ps-dots"><div class="ps-dot"></div><div class="ps-dot"></div><div class="ps-dot"></div></div>
+            <span class="ps-label">MOOD</span>
+          </div>
           <div class="mood-grid">
             <button class="mood-btn active" data-mood="clean">CLEAN</button>
             <button class="mood-btn" data-mood="corrupted">CORRUPT</button>
@@ -72,90 +94,103 @@
           </div>
         </div>
 
-        <div class="panel-section">
-          <div class="panel-label">&gt; SEED</div>
-          <input type="text" id="seed-input" placeholder="type a seed..." class="seed-input">
-          <button class="btn full-width" id="btn-seed">GENERATE</button>
+        <div class="ps">
+          <div class="ps-head">
+            <div class="ps-dots"><div class="ps-dot"></div><div class="ps-dot"></div><div class="ps-dot"></div></div>
+            <span class="ps-label">SEED</span>
+          </div>
+          <input type="text" id="seed-input" placeholder="type any word...">
+          <button class="btn full" id="btn-seed">GENERATE</button>
         </div>
 
       </aside>
 
-      <!-- CENTER CANVAS -->
+      <!-- ── CANVAS ── -->
       <main id="canvas-area">
         <div id="canvas-wrap">
-          <div id="canvas-container">
-            <canvas id="main-canvas"></canvas>
-            <canvas id="overlay-canvas"></canvas>
+          <div id="canvas-panel">
+            <div id="canvas-mbar">
+              <div class="cm-dots">
+                <div class="cm-dot"></div>
+                <div class="cm-dot"></div>
+                <div class="cm-dot"></div>
+              </div>
+              <span id="canvas-mbar-label">basis://art.canvas</span>
+              <span id="canvas-mbar-status">READY</span>
+            </div>
+            <div id="canvas-container">
+              <canvas id="main-canvas"></canvas>
+              <canvas id="overlay-canvas"></canvas>
+            </div>
           </div>
         </div>
         <div id="canvas-hint">scroll to zoom &bull; drag image to import &bull; right-click to erase</div>
       </main>
 
-      <!-- RIGHT PANEL -->
+      <!-- ── RIGHT PANEL ── -->
       <aside id="panel-right">
 
-        <div class="panel-section">
-          <div class="panel-label">&gt; COLOR</div>
-          <div class="color-display">
-            <div id="color-preview" title="Click to open color picker"></div>
-            <input type="color" id="color-picker" value="#00ff41">
-            <span id="color-hex">#00ff41</span>
+        <div class="ps">
+          <div class="ps-head">
+            <div class="ps-dots"><div class="ps-dot"></div><div class="ps-dot"></div><div class="ps-dot"></div></div>
+            <span class="ps-label">COLOR</span>
           </div>
-          <div class="panel-sublabel">FOREGROUND</div>
+          <div class="color-row">
+            <div id="color-preview" title="Click to open picker"></div>
+            <input type="color" id="color-picker" value="#78b15a">
+            <span id="color-hex">#78b15a</span>
+          </div>
+          <div class="sub-label">FOREGROUND</div>
           <div id="palette-fg"></div>
-          <div class="panel-sublabel">BACKGROUND</div>
+          <div class="sub-label">BACKGROUND</div>
           <div id="palette-bg"></div>
         </div>
 
-        <div class="panel-section">
-          <div class="panel-label">&gt; ASCII</div>
-          <div class="ascii-input-row">
+        <div class="ps">
+          <div class="ps-head">
+            <div class="ps-dots"><div class="ps-dot"></div><div class="ps-dot"></div><div class="ps-dot"></div></div>
+            <span class="ps-label">ASCII</span>
+          </div>
+          <div class="ascii-ctrl">
             <input type="text" id="ascii-char-input" maxlength="1" placeholder="?">
             <button class="btn" id="ascii-clear-btn">CLR</button>
             <label class="auto-label">
               <input type="checkbox" id="ascii-auto"> AUTO
             </label>
           </div>
-          <div class="panel-sublabel">BLOCKS</div>
+          <div class="sub-label">BLOCKS</div>
           <div class="ascii-grid" id="ascii-blocks"></div>
-          <div class="panel-sublabel">BOX DRAWING</div>
+          <div class="sub-label">BOX DRAWING</div>
           <div class="ascii-grid" id="ascii-box"></div>
-          <div class="panel-sublabel">SYMBOLS</div>
+          <div class="sub-label">SYMBOLS</div>
           <div class="ascii-grid" id="ascii-symbols"></div>
-          <div class="panel-sublabel">BRAILLE</div>
+          <div class="sub-label">BRAILLE</div>
           <div class="ascii-grid" id="ascii-braille"></div>
         </div>
 
-        <div class="panel-section">
-          <div class="panel-label">&gt; EFFECTS</div>
+        <div class="ps">
+          <div class="ps-head">
+            <div class="ps-dots"><div class="ps-dot"></div><div class="ps-dot"></div><div class="ps-dot"></div></div>
+            <span class="ps-label">EFFECTS</span>
+          </div>
           <div class="fx-row">
-            <label class="fx-label">
-              <input type="checkbox" id="fx-scanlines" checked> SCANLINES
-            </label>
+            <label class="fx-label"><input type="checkbox" id="fx-scanlines" checked> SCANLINES</label>
             <input type="range" id="fx-scanlines-val" min="0" max="100" value="40" class="fx-slider">
           </div>
           <div class="fx-row">
-            <label class="fx-label">
-              <input type="checkbox" id="fx-glow" checked> GLOW
-            </label>
+            <label class="fx-label"><input type="checkbox" id="fx-glow" checked> GLOW</label>
             <input type="range" id="fx-glow-val" min="0" max="100" value="60" class="fx-slider">
           </div>
           <div class="fx-row">
-            <label class="fx-label">
-              <input type="checkbox" id="fx-vignette" checked> VIGNETTE
-            </label>
+            <label class="fx-label"><input type="checkbox" id="fx-vignette" checked> VIGNETTE</label>
             <input type="range" id="fx-vignette-val" min="0" max="100" value="50" class="fx-slider">
           </div>
           <div class="fx-row">
-            <label class="fx-label">
-              <input type="checkbox" id="fx-noise"> NOISE
-            </label>
+            <label class="fx-label"><input type="checkbox" id="fx-noise"> NOISE</label>
             <input type="range" id="fx-noise-val" min="0" max="100" value="20" class="fx-slider">
           </div>
           <div class="fx-row">
-            <label class="fx-label">
-              <input type="checkbox" id="fx-flicker"> FLICKER
-            </label>
+            <label class="fx-label"><input type="checkbox" id="fx-flicker"> FLICKER</label>
             <input type="range" id="fx-flicker-val" min="0" max="100" value="30" class="fx-slider">
           </div>
         </div>
@@ -163,20 +198,19 @@
       </aside>
     </div>
 
-    <!-- STATUS BAR -->
+    <!-- ── STATUS BAR ── -->
     <footer id="statusbar">
       <span id="st-coords">x:-- y:--</span>
-      <span class="sep">|</span>
+      <span class="st-sep">|</span>
       <span id="st-tool">PENCIL</span>
-      <span class="sep">|</span>
-      <span id="st-color">#00ff41</span>
-      <span class="sep">|</span>
+      <span class="st-sep">|</span>
+      <span id="st-color">#78b15a</span>
+      <span class="st-sep">|</span>
       <span id="st-char">CHAR: none</span>
-      <span class="sep">|</span>
+      <span class="st-sep">|</span>
       <span id="st-mood">MOOD: CLEAN</span>
-      <span class="sep">|</span>
-      <span id="st-size">32x32</span>
-      <span class="sep">|</span>
+      <span class="st-sep">|</span>
+      <span id="st-size">32&#215;32</span>
       <span id="st-msg">ready<span class="blink">_</span></span>
     </footer>
 

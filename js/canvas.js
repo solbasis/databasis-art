@@ -42,7 +42,7 @@ export class Canvas {
 
   _buildGrid() {
     this.grid = Array.from({ length: this.H }, () =>
-      Array.from({ length: this.W }, () => ({ bg: '#000000', char: null, charColor: '#00ff41' }))
+      Array.from({ length: this.W }, () => ({ bg: '#000000', char: null, charColor: '#78b15a' }))
     );
   }
 
@@ -60,7 +60,8 @@ export class Canvas {
 
   /* ── mouse ── */
   _bindMouse() {
-    const el = this.overlayEl;
+    // Bind to container so events fire regardless of overlay pointer-events
+    const el = this.mainEl.parentElement;
 
     el.addEventListener('contextmenu', e => e.preventDefault());
 
@@ -107,7 +108,7 @@ export class Canvas {
   }
 
   _cellAt(e) {
-    const r = this.overlayEl.getBoundingClientRect();
+    const r = this.mainEl.getBoundingClientRect();
     const x = Math.floor((e.clientX - r.left)  / this.CS);
     const y = Math.floor((e.clientY - r.top)   / this.CS);
     if (x < 0 || x >= this.W || y < 0 || y >= this.H) return null;

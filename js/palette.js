@@ -13,7 +13,7 @@ const SWATCHES = [
 
 export class Palette {
   constructor() {
-    this.fg = '#00ff41';
+    this.fg = '#78b15a';
     this.bg = '#000000';
     this._renderGrid('palette-fg', c => this.setFg(c));
     this._renderGrid('palette-bg', c => this.setBg(c));
@@ -37,7 +37,7 @@ export class Palette {
   }
 
   _updatePreview() {
-    document.getElementById('color-preview').style.background = this.fg;
+    document.getElementById('color-preview').style.background  = this.fg;
   }
 
   _renderGrid(id, onClick) {

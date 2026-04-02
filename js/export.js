@@ -4,25 +4,30 @@ export class Exporter {
     this.effects = effects;
   }
 
+  getScale() {
+    return parseInt(document.getElementById('export-scale')?.value || '1', 10);
+  }
+
   exportPNG() {
-    const out  = this.canvas.getExportCanvas();
-    const link = document.createElement('a');
-    link.download = `databasis-art-${Date.now()}.png`;
+    const scale = this.getScale();
+    const out   = this.canvas.getExportCanvas(scale);
+    const link  = document.createElement('a');
+    link.download = `basis-art-${Date.now()}.png`;
     link.href     = out.toDataURL('image/png');
     link.click();
-    this._status('PNG saved');
+    this._st(`PNG saved (${scale}x)`);
   }
 
   exportGIF() {
     if (typeof GIF === 'undefined') {
-      this._status('GIF lib not loaded — check connection');
+      this._st('GIF lib not loaded');
       return;
     }
+    const scale = this.getScale();
+    const W = this.canvas.mainEl.width  * scale;
+    const H = this.canvas.mainEl.height * scale;
 
-    this._status('building GIF...');
-
-    const W = this.canvas.mainEl.width;
-    const H = this.canvas.mainEl.height;
+    this._st('building GIF...');
 
     const gif = new GIF({
       workers:      2,
@@ -33,41 +38,34 @@ export class Exporter {
     });
 
     const FRAMES = 10;
-
     for (let f = 0; f < FRAMES; f++) {
       const fc  = document.createElement('canvas');
       fc.width  = W; fc.height = H;
       const ctx = fc.getContext('2d');
-
-      // Base art
-      ctx.drawImage(this.canvas.mainEl, 0, 0);
-
-      // Effects per-frame (animated)
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(this.canvas.mainEl, 0, 0, W, H);
       this.effects.render(ctx, W, H, f * 3);
-
-      // Subtle per-frame flicker
       if (f % 4 === 0) {
-        ctx.fillStyle = 'rgba(255,255,255,0.012)';
+        ctx.fillStyle = 'rgba(255,255,255,0.01)';
         ctx.fillRect(0, 0, W, H);
       }
-
       gif.addFrame(fc, { delay: 80 + (f % 3) * 15 });
     }
 
     gif.on('finished', blob => {
       const url  = URL.createObjectURL(blob);
       const link = document.createElement('a');
-      link.download = `databasis-art-${Date.now()}.gif`;
-      link.href     = url;
+      link.download = `basis-art-${Date.now()}.gif`;
+      link.href = url;
       link.click();
       URL.revokeObjectURL(url);
-      this._status('GIF saved');
+      this._st(`GIF saved (${scale}x)`);
     });
 
     gif.render();
   }
 
-  _status(msg) {
+  _st(msg) {
     const el = document.getElementById('st-msg');
     if (el) el.innerHTML = msg + '<span class="blink">_</span>';
   }

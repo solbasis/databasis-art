@@ -1,6 +1,7 @@
+// Colors match the CSS --g token for each mood exactly
 const MOODS = {
   clean: {
-    color: '#00ff41',
+    color: '#78b15a',
     effects: {
       scanlines: { enabled: true,  intensity: 0.40 },
       glow:      { enabled: true,  intensity: 0.60 },
@@ -10,7 +11,7 @@ const MOODS = {
     },
   },
   corrupted: {
-    color: '#ff3131',
+    color: '#c85a5a',
     effects: {
       scanlines: { enabled: true,  intensity: 0.75 },
       glow:      { enabled: true,  intensity: 0.85 },
@@ -20,7 +21,7 @@ const MOODS = {
     },
   },
   haunted: {
-    color: '#8888ff',
+    color: '#8888cc',
     effects: {
       scanlines: { enabled: true,  intensity: 0.30 },
       glow:      { enabled: true,  intensity: 0.40 },
@@ -30,7 +31,7 @@ const MOODS = {
     },
   },
   electric: {
-    color: '#00ffff',
+    color: '#5ab1b1',
     effects: {
       scanlines: { enabled: true,  intensity: 0.50 },
       glow:      { enabled: true,  intensity: 1.00 },
@@ -40,7 +41,7 @@ const MOODS = {
     },
   },
   dead: {
-    color: '#555555',
+    color: '#666666',
     effects: {
       scanlines: { enabled: true,  intensity: 0.65 },
       glow:      { enabled: false, intensity: 0.10 },
@@ -50,7 +51,7 @@ const MOODS = {
     },
   },
   transmission: {
-    color: '#ffb300',
+    color: '#b19a5a',
     effects: {
       scanlines: { enabled: true,  intensity: 0.55 },
       glow:      { enabled: true,  intensity: 0.70 },
@@ -63,9 +64,9 @@ const MOODS = {
 
 export class MoodSystem {
   constructor(palette, effects) {
-    this.palette  = palette;
-    this.effects  = effects;
-    this.current  = 'clean';
+    this.palette = palette;
+    this.effects = effects;
+    this.current = 'clean';
   }
 
   apply(name) {
@@ -76,6 +77,4 @@ export class MoodSystem {
     this.palette.setFg(mood.color);
     this.effects.applyPreset(mood.effects);
   }
-
-  getCurrent() { return this.current; }
 }

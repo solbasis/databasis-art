@@ -544,6 +544,67 @@ input[type="color"] { width: 0; height: 0; padding: 0; border: none; opacity: 0;
 .st-sep  { color: var(--border-hi); }
 #st-msg  { color: var(--text-dim); margin-left: auto; }
 
+/* ─── Toolbar select ─────────────────────────────────────────────────────── */
+.tb-select {
+  background: transparent;
+  border: 1px solid var(--border-hi);
+  border-radius: var(--r-sm);
+  color: var(--text-soft);
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  padding: 4px 6px;
+  cursor: pointer;
+  outline: none;
+}
+.tb-select:hover { border-color: var(--g); }
+.tb-select option { background: var(--bg2); color: var(--text); }
+
+/* ─── Active toolbar button ──────────────────────────────────────────────── */
+#btn-grid.active { border-color: var(--border-act); color: var(--g); background: var(--g10); }
+
+/* ─── Collapsible panels ─────────────────────────────────────────────────── */
+.ps-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px 6px;
+  margin: -10px -10px 8px;
+  border-bottom: 1px solid var(--head-border);
+  background: linear-gradient(to right, var(--head-bg), transparent);
+  cursor: pointer;
+  user-select: none;
+}
+.ps-arrow {
+  margin-left: auto;
+  font-size: 0.55rem;
+  color: var(--text-mute);
+  transition: transform 0.15s;
+}
+.ps.collapsed .ps-arrow { transform: rotate(180deg); }
+.ps-body { overflow: hidden; }
+.ps.collapsed .ps-body { display: none; }
+.ps.collapsed { padding-bottom: 0; }
+
+/* ─── Char color row ─────────────────────────────────────────────────────── */
+.char-color-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+#char-color-preview {
+  width: 22px; height: 22px;
+  border: 1px solid var(--border-hi);
+  border-radius: var(--r-sm);
+  background: #78b15a;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+#char-color-preview:hover { box-shadow: var(--glow); }
+
+/* ─── Zoom in status bar ─────────────────────────────────────────────────── */
+#st-zoom { color: var(--text-dim); }
+
 /* ─── Blink ──────────────────────────────────────────────────────────────── */
 .blink { animation: blink 1s step-end infinite; }
 @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }

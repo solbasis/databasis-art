@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DATABASIS:ART // terminal pixel studio</title>
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body data-mood="">
+  <div id="app">
+
+    <!-- TOP BAR -->
+    <header id="topbar">
+      <div class="brand">DATABASIS:ART<span class="blink">_</span></div>
+      <div class="topbar-actions">
+        <button class="btn" id="btn-new" title="New canvas [Ctrl+N]">NEW</button>
+        <button class="btn" id="btn-import" title="Import image">IMPORT</button>
+        <div class="sep">|</div>
+        <button class="btn" id="btn-undo" title="Undo [Ctrl+Z]">UNDO</button>
+        <button class="btn" id="btn-redo" title="Redo [Ctrl+Y]">REDO</button>
+        <button class="btn" id="btn-clear" title="Clear canvas">CLEAR</button>
+        <div class="sep">|</div>
+        <button class="btn accent" id="btn-export-png" title="Export PNG [Ctrl+S]">PNG</button>
+        <button class="btn accent" id="btn-export-gif" title="Export GIF [Ctrl+G]">GIF</button>
+      </div>
+      <input type="file" id="file-import" accept="image/*" style="display:none">
+    </header>
+
+    <div id="workspace">
+
+      <!-- LEFT PANEL -->
+      <aside id="panel-left">
+
+        <div class="panel-section">
+          <div class="panel-label">&gt; TOOLS</div>
+          <div class="tool-grid">
+            <button class="tool-btn active" data-tool="pencil" title="Pencil [P]">&#9999;</button>
+            <button class="tool-btn" data-tool="fill"    title="Fill [F]">&#9619;</button>
+            <button class="tool-btn" data-tool="eraser"  title="Eraser [E]">&#9633;</button>
+            <button class="tool-btn" data-tool="eyedropper" title="Eyedropper [I]">&#9685;</button>
+            <button class="tool-btn" data-tool="line"    title="Line [L]">&#9585;</button>
+            <button class="tool-btn" data-tool="corrupt" title="Corrupt [X]">&#9618;</button>
+          </div>
+        </div>
+
+        <div class="panel-section">
+          <div class="panel-label">&gt; CANVAS</div>
+          <div class="input-row">
+            <label>W</label>
+            <input type="number" id="grid-w" value="32" min="4" max="128">
+          </div>
+          <div class="input-row">
+            <label>H</label>
+            <input type="number" id="grid-h" value="32" min="4" max="128">
+          </div>
+          <div class="input-row">
+            <label>PX</label>
+            <input type="number" id="cell-size" value="16" min="4" max="32" step="2">
+          </div>
+          <button class="btn full-width" id="btn-resize">RESIZE</button>
+        </div>
+
+        <div class="panel-section">
+          <div class="panel-label">&gt; MOOD</div>
+          <div class="mood-grid">
+            <button class="mood-btn active" data-mood="clean">CLEAN</button>
+            <button class="mood-btn" data-mood="corrupted">CORRUPT</button>
+            <button class="mood-btn" data-mood="haunted">HAUNTED</button>
+            <button class="mood-btn" data-mood="electric">ELECTRIC</button>
+            <button class="mood-btn" data-mood="dead">DEAD</button>
+            <button class="mood-btn" data-mood="transmission">SIGNAL</button>
+          </div>
+        </div>
+
+        <div class="panel-section">
+          <div class="panel-label">&gt; SEED</div>
+          <input type="text" id="seed-input" placeholder="type a seed..." class="seed-input">
+          <button class="btn full-width" id="btn-seed">GENERATE</button>
+        </div>
+
+      </aside>
+
+      <!-- CENTER CANVAS -->
+      <main id="canvas-area">
+        <div id="canvas-wrap">
+          <div id="canvas-container">
+            <canvas id="main-canvas"></canvas>
+            <canvas id="overlay-canvas"></canvas>
+          </div>
+        </div>
+        <div id="canvas-hint">scroll to zoom &bull; drag image to import &bull; right-click to erase</div>
+      </main>
+
+      <!-- RIGHT PANEL -->
+      <aside id="panel-right">
+
+        <div class="panel-section">
+          <div class="panel-label">&gt; COLOR</div>
+          <div class="color-display">
+            <div id="color-preview" title="Click to open color picker"></div>
+            <input type="color" id="color-picker" value="#00ff41">
+            <span id="color-hex">#00ff41</span>
+          </div>
+          <div class="panel-sublabel">FOREGROUND</div>
+          <div id="palette-fg"></div>
+          <div class="panel-sublabel">BACKGROUND</div>
+          <div id="palette-bg"></div>
+        </div>
+
+        <div class="panel-section">
+          <div class="panel-label">&gt; ASCII</div>
+          <div class="ascii-input-row">
+            <input type="text" id="ascii-char-input" maxlength="1" placeholder="?">
+            <button class="btn" id="ascii-clear-btn">CLR</button>
+            <label class="auto-label">
+              <input type="checkbox" id="ascii-auto"> AUTO
+            </label>
+          </div>
+          <div class="panel-sublabel">BLOCKS</div>
+          <div class="ascii-grid" id="ascii-blocks"></div>
+          <div class="panel-sublabel">BOX DRAWING</div>
+          <div class="ascii-grid" id="ascii-box"></div>
+          <div class="panel-sublabel">SYMBOLS</div>
+          <div class="ascii-grid" id="ascii-symbols"></div>
+          <div class="panel-sublabel">BRAILLE</div>
+          <div class="ascii-grid" id="ascii-braille"></div>
+        </div>
+
+        <div class="panel-section">
+          <div class="panel-label">&gt; EFFECTS</div>
+          <div class="fx-row">
+            <label class="fx-label">
+              <input type="checkbox" id="fx-scanlines" checked> SCANLINES
+            </label>
+            <input type="range" id="fx-scanlines-val" min="0" max="100" value="40" class="fx-slider">
+          </div>
+          <div class="fx-row">
+            <label class="fx-label">
+              <input type="checkbox" id="fx-glow" checked> GLOW
+            </label>
+            <input type="range" id="fx-glow-val" min="0" max="100" value="60" class="fx-slider">
+          </div>
+          <div class="fx-row">
+            <label class="fx-label">
+              <input type="checkbox" id="fx-vignette" checked> VIGNETTE
+            </label>
+            <input type="range" id="fx-vignette-val" min="0" max="100" value="50" class="fx-slider">
+          </div>
+          <div class="fx-row">
+            <label class="fx-label">
+              <input type="checkbox" id="fx-noise"> NOISE
+            </label>
+            <input type="range" id="fx-noise-val" min="0" max="100" value="20" class="fx-slider">
+          </div>
+          <div class="fx-row">
+            <label class="fx-label">
+              <input type="checkbox" id="fx-flicker"> FLICKER
+            </label>
+            <input type="range" id="fx-flicker-val" min="0" max="100" value="30" class="fx-slider">
+          </div>
+        </div>
+
+      </aside>
+    </div>
+
+    <!-- STATUS BAR -->
+    <footer id="statusbar">
+      <span id="st-coords">x:-- y:--</span>
+      <span class="sep">|</span>
+      <span id="st-tool">PENCIL</span>
+      <span class="sep">|</span>
+      <span id="st-color">#00ff41</span>
+      <span class="sep">|</span>
+      <span id="st-char">CHAR: none</span>
+      <span class="sep">|</span>
+      <span id="st-mood">MOOD: CLEAN</span>
+      <span class="sep">|</span>
+      <span id="st-size">32x32</span>
+      <span class="sep">|</span>
+      <span id="st-msg">ready<span class="blink">_</span></span>
+    </footer>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.js"></script>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

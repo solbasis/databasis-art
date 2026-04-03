@@ -99,6 +99,7 @@ export class Tools {
 
       case 'fill':
         this.canvas.fill(cell.x, cell.y, this.palette.getFg());
+        this.canvas.saveSnap(); // fill is one-shot — save immediately
         break;
 
       case 'eyedropper': {

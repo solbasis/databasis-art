@@ -123,10 +123,14 @@ body {
 }
 
 /* ─── App shell ──────────────────────────────────────────────────────────── */
+:root {
+  --timeline-h: 110px;
+}
+
 #app {
   position: relative;
   display: grid;
-  grid-template-rows: var(--topbar-h) 1fr var(--botbar-h);
+  grid-template-rows: var(--topbar-h) 1fr var(--timeline-h) var(--botbar-h);
   height: 100vh;
   z-index: 1;
 }
@@ -406,11 +410,12 @@ input[type="text"]:focus { border-color: var(--border-act); }
   flex-shrink: 0;
 }
 
-#main-canvas, #overlay-canvas {
+#main-canvas, #webgl-canvas, #overlay-canvas {
   display: block;
   position: absolute;
   top: 0; left: 0;
 }
+#webgl-canvas   { pointer-events: none; }
 #overlay-canvas { pointer-events: none; }
 
 #canvas-hint {
@@ -616,3 +621,262 @@ input[type="color"] { width: 0; height: 0; padding: 0; border: none; opacity: 0;
 
 /* ─── Selection ──────────────────────────────────────────────────────────── */
 ::selection { background: var(--g40); color: var(--bg); }
+
+/* ─── WebGL canvas ───────────────────────────────────────────────────────── */
+#webgl-canvas {
+  display: block;
+  position: absolute;
+  top: 0; left: 0;
+  pointer-events: none;
+  image-rendering: pixelated;
+}
+
+/* ─── Canvas stacking (main → webgl → overlay) ──────────────────────────── */
+#main-canvas  { z-index: 0; }
+#webgl-canvas { z-index: 1; }
+#overlay-canvas { z-index: 2; pointer-events: none; }
+
+/* ─── Timeline panel ─────────────────────────────────────────────────────── */
+#timeline-panel {
+  border-top: 1px solid var(--border);
+  background: var(--bg2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.tl-bar {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  background: linear-gradient(to right, var(--head-bg), transparent);
+}
+
+.tl-bar-label {
+  font-size: 0.58rem;
+  letter-spacing: 2px;
+  color: var(--text-mute);
+  text-transform: uppercase;
+  margin-right: 4px;
+  flex-shrink: 0;
+}
+
+.tl-count {
+  font-size: 0.60rem;
+  color: var(--text-mute);
+  margin-left: auto;
+  flex-shrink: 0;
+  letter-spacing: 1px;
+}
+
+.tl-onion-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-mute);
+  font-size: 0.60rem;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+.tl-onion-label input { accent-color: var(--g); }
+
+#tl-fps {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  color: var(--text-dim);
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  padding: 3px 5px;
+  outline: none;
+  cursor: pointer;
+}
+#tl-fps option { background: var(--bg2); }
+
+#tl-strip {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 10px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  flex: 1;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.tl-frame {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.tl-frame canvas {
+  display: block;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  image-rendering: pixelated;
+  transition: border-color .1s, box-shadow .1s;
+}
+
+.tl-frame:hover canvas { border-color: var(--border-hi); }
+
+.tl-frame.active canvas {
+  border-color: var(--g);
+  box-shadow: 0 0 6px var(--g40);
+}
+
+.tl-frame-num {
+  font-size: 0.55rem;
+  color: var(--text-mute);
+  letter-spacing: 0.5px;
+}
+
+.tl-frame.active .tl-frame-num { color: var(--g); }
+
+/* ─── Command palette ────────────────────────────────────────────────────── */
+#cmd-palette {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, .65);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 72px;
+  z-index: 10000;
+  backdrop-filter: blur(3px);
+}
+
+#cmd-palette.hidden { display: none; }
+
+#cmd-modal {
+  width: 460px;
+  max-width: 90vw;
+  background: var(--bg2);
+  border: 1px solid var(--border-hi);
+  border-radius: var(--r);
+  box-shadow: 0 12px 40px rgba(0,0,0,.85), var(--glow);
+  overflow: hidden;
+}
+
+#cmd-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 0.80rem;
+  padding: 14px 16px;
+  outline: none;
+  letter-spacing: 0.3px;
+}
+
+#cmd-input::placeholder { color: var(--text-mute); }
+
+#cmd-list {
+  max-height: 340px;
+  overflow-y: auto;
+}
+
+.cmd-row {
+  display: flex;
+  align-items: center;
+  padding: 9px 16px;
+  cursor: pointer;
+  gap: 10px;
+  transition: background .07s;
+}
+
+.cmd-row:hover,
+.cmd-row.active { background: var(--g10); }
+
+.cmd-name {
+  flex: 1;
+  font-size: 0.70rem;
+  color: var(--text-soft);
+  letter-spacing: 0.3px;
+}
+
+.cmd-name mark {
+  background: none;
+  color: var(--g);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.cmd-key {
+  font-size: 0.58rem;
+  color: var(--text-mute);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 1px 6px;
+  flex-shrink: 0;
+  letter-spacing: 0.5px;
+}
+
+/* ─── Symmetry buttons ───────────────────────────────────────────────────── */
+.sym-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 3px;
+}
+
+.sym-btn {
+  padding: 6px 2px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--g06);
+  color: var(--text-mute);
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: all .1s;
+  text-align: center;
+}
+
+.sym-btn:hover  { border-color: var(--border-hi); color: var(--text); background: var(--g10); }
+.sym-btn.active { border-color: var(--border-act); color: var(--g); background: var(--g15); box-shadow: var(--glow); }
+
+/* ─── Selection toolbar (in canvas-mbar) ────────────────────────────────── */
+#sel-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  margin-right: 8px;
+}
+
+#sel-toolbar.hidden { display: none !important; }
+
+.sel-btn {
+  padding: 2px 7px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--text-mute);
+  font-family: var(--mono);
+  font-size: 0.60rem;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all .1s;
+}
+
+.sel-btn:hover { border-color: var(--g); color: var(--g); background: var(--g10); }
+
+/* ─── CRT slider accent ──────────────────────────────────────────────────── */
+.crt-sl { accent-color: #5ab1b1; }
+
+/* ─── Workspace spans only the 2nd row ──────────────────────────────────── */
+#workspace { grid-row: 2; }

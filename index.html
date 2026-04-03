@@ -14,6 +14,14 @@
   <div class="screen-glow" aria-hidden="true"></div>
   <div class="crt-overlay"  aria-hidden="true"></div>
 
+  <!-- ── COMMAND PALETTE OVERLAY ── -->
+  <div id="cmd-palette" class="hidden" role="dialog" aria-label="Command palette">
+    <div id="cmd-modal">
+      <input type="text" id="cmd-input" placeholder="type a command..." autocomplete="off" spellcheck="false">
+      <div id="cmd-list"></div>
+    </div>
+  </div>
+
   <div id="app">
 
     <!-- ── TOP BAR ── -->
@@ -38,6 +46,8 @@
       </select>
       <button class="btn accent" id="btn-export-png" title="Export PNG [Ctrl+S]">&#8595; PNG</button>
       <button class="btn accent" id="btn-export-gif" title="Export GIF [Ctrl+G]">&#8595; GIF</button>
+      <div class="tb-sep"></div>
+      <button class="btn" id="btn-cmd" title="Command palette [Ctrl+K]" onclick="document.getElementById('cmd-palette').classList.toggle('hidden')">&#8984; CMD</button>
       <input type="file" id="file-import" accept="image/*" style="display:none">
     </header>
 
@@ -60,6 +70,24 @@
               <button class="tool-btn"        data-tool="eyedropper" title="Eyedropper [I]"><span class="icon">&#9685;</span> PICK</button>
               <button class="tool-btn"        data-tool="line"       title="Line [L]"><span class="icon">&#9585;</span> LINE</button>
               <button class="tool-btn"        data-tool="corrupt"    title="Glitch [X]"><span class="icon">&#9618;</span> GLITCH</button>
+              <button class="tool-btn"        data-tool="select"     title="Select &amp; Move [S]"><span class="icon">&#11036;</span> SELECT</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="ps">
+          <div class="ps-head">
+            <div class="ps-dots"><div class="ps-dot"></div><div class="ps-dot"></div><div class="ps-dot"></div></div>
+            <span class="ps-label">SYMMETRY</span>
+            <span class="ps-arrow">&#9650;</span>
+          </div>
+          <div class="ps-body">
+            <div class="sym-grid">
+              <button class="sym-btn active" data-sym="none"    title="No symmetry">NONE</button>
+              <button class="sym-btn"        data-sym="h"       title="Horizontal mirror">H</button>
+              <button class="sym-btn"        data-sym="v"       title="Vertical mirror">V</button>
+              <button class="sym-btn"        data-sym="quad"    title="4-way quad mirror">QUAD</button>
+              <button class="sym-btn"        data-sym="radial8" title="8-way radial">8WAY</button>
             </div>
           </div>
         </div>
@@ -117,15 +145,23 @@
             <div id="canvas-mbar">
               <div class="cm-dots"><div class="cm-dot"></div><div class="cm-dot"></div><div class="cm-dot"></div></div>
               <span id="canvas-mbar-label">basis://art.canvas</span>
+              <!-- Selection action toolbar (hidden unless select tool active) -->
+              <div id="sel-toolbar" class="hidden">
+                <button class="sel-btn" id="sel-flip-h" title="Flip Horizontal [selection]">&#8596; H</button>
+                <button class="sel-btn" id="sel-flip-v" title="Flip Vertical [selection]">&#8597; V</button>
+                <button class="sel-btn" id="sel-del"    title="Delete selection [Del]">&#10005; DEL</button>
+                <button class="sel-btn" id="sel-clear"  title="Deselect [Esc]">&#9645; CLR</button>
+              </div>
               <span id="canvas-mbar-status">READY</span>
             </div>
             <div id="canvas-container">
               <canvas id="main-canvas"></canvas>
+              <canvas id="webgl-canvas"></canvas>
               <canvas id="overlay-canvas"></canvas>
             </div>
           </div>
         </div>
-        <div id="canvas-hint">scroll to zoom &bull; drag image to import &bull; right-click to erase &bull; work auto-saved</div>
+        <div id="canvas-hint">scroll to zoom &bull; drag image to import &bull; right-click to erase &bull; Ctrl+K for commands</div>
       </main>
 
       <!-- ── RIGHT PANEL ── -->
@@ -186,15 +222,46 @@
             <span class="ps-arrow">&#9650;</span>
           </div>
           <div class="ps-body">
+            <div class="sub-label">CPU FX</div>
             <div class="fx-row"><label class="fx-label"><input type="checkbox" id="fx-scanlines" checked> SCANLINES</label><input type="range" id="fx-scanlines-val" min="0" max="100" value="40" class="fx-slider"></div>
             <div class="fx-row"><label class="fx-label"><input type="checkbox" id="fx-glow" checked> GLOW</label><input type="range" id="fx-glow-val" min="0" max="100" value="60" class="fx-slider"></div>
             <div class="fx-row"><label class="fx-label"><input type="checkbox" id="fx-vignette" checked> VIGNETTE</label><input type="range" id="fx-vignette-val" min="0" max="100" value="50" class="fx-slider"></div>
             <div class="fx-row"><label class="fx-label"><input type="checkbox" id="fx-noise"> NOISE</label><input type="range" id="fx-noise-val" min="0" max="100" value="20" class="fx-slider"></div>
             <div class="fx-row"><label class="fx-label"><input type="checkbox" id="fx-flicker"> FLICKER</label><input type="range" id="fx-flicker-val" min="0" max="100" value="30" class="fx-slider"></div>
+            <div class="sub-label">CRT SHADER</div>
+            <div class="fx-row"><label class="fx-label">BARREL</label><input type="range" id="crt-barrel" min="0" max="100" value="0" class="fx-slider crt-sl"></div>
+            <div class="fx-row"><label class="fx-label">CHROMA</label><input type="range" id="crt-chroma" min="0" max="100" value="0" class="fx-slider crt-sl"></div>
+            <div class="fx-row"><label class="fx-label">CRT SCAN</label><input type="range" id="crt-scanlines" min="0" max="100" value="0" class="fx-slider crt-sl"></div>
+            <div class="fx-row"><label class="fx-label">CRT VIG</label><input type="range" id="crt-vignette" min="0" max="100" value="0" class="fx-slider crt-sl"></div>
+            <div class="fx-row"><label class="fx-label">PHOSPHOR</label><input type="range" id="crt-flicker" min="0" max="100" value="0" class="fx-slider crt-sl"></div>
           </div>
         </div>
 
       </aside>
+    </div>
+
+    <!-- ── TIMELINE PANEL ── -->
+    <div id="timeline-panel">
+      <div class="tl-bar">
+        <span class="tl-bar-label">TIMELINE</span>
+        <button class="btn" id="tl-add" title="Add frame">+ ADD</button>
+        <button class="btn" id="tl-dup" title="Duplicate frame">DUP</button>
+        <button class="btn" id="tl-del" title="Delete frame">DEL</button>
+        <div class="tb-sep"></div>
+        <button class="btn accent" id="tl-play" title="Play / Stop">&#9654; PLAY</button>
+        <select id="tl-fps" class="tb-select" title="Frames per second">
+          <option value="2">2fps</option>
+          <option value="4">4fps</option>
+          <option value="8" selected>8fps</option>
+          <option value="12">12fps</option>
+          <option value="24">24fps</option>
+        </select>
+        <label class="tl-onion-label">
+          <input type="checkbox" id="tl-onion" checked> ONION
+        </label>
+        <span id="tl-count" class="tl-count">1 / 1</span>
+      </div>
+      <div id="tl-strip"></div>
     </div>
 
     <!-- ── STATUS BAR ── -->

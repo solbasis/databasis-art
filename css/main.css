@@ -1,58 +1,19 @@
 /* ─── Reset ──────────────────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ─── BASIS Design Tokens ────────────────────────────────────────────────── */
+/* ─── Canonical BASIS design tokens (dark only — art is dark-by-design) ─── */
+@import './tokens.css';
+
+/* App-specific layout overrides — smaller radii + custom layout dims that
+   make sense for the pixel-studio UI density. Tokens for colors, text,
+   borders, etc. come from the imported canonical set above. */
 :root {
-  /* Brand green — matches databasis-web exactly */
-  --g:        #78b15a;
-  --g-bright: #a4e07e;
-  --g90: rgba(120,177,90,.92);
-  --g70: rgba(120,177,90,.70);
-  --g55: rgba(120,177,90,.55);
-  --g40: rgba(120,177,90,.40);
-  --g25: rgba(120,177,90,.25);
-  --g15: rgba(120,177,90,.15);
-  --g10: rgba(120,177,90,.10);
-  --g06: rgba(120,177,90,.06);
-
-  /* Backgrounds */
-  --bg:      #0a0e08;
-  --bg2:     #060a04;
-  --bg3:     #0a1408;
-  --surface: rgba(20,35,18,.55);
-
-  /* Borders */
-  --border:     rgba(120,177,90,.18);
-  --border-hi:  rgba(120,177,90,.30);
-  --border-act: rgba(120,177,90,.50);
-
-  /* Text */
-  --text:      rgba(120,177,90,.92);
-  --text-dim:  rgba(120,177,90,.60);
-  --text-soft: rgba(120,177,90,.82);
-  --text-mute: rgba(120,177,90,.30);
-
-  /* Semantic */
-  --pos:  #6dd97d;
-  --neg:  #e07070;
-  --warn: #c8a832;
-
-  /* Effects */
-  --glow:    0 0 6px  rgba(120,177,90,.20);
-  --glow-lg: 0 0 18px rgba(120,177,90,.55);
-  --shadow:  inset 0 0 14px rgba(120,177,90,.04);
-
-  /* Layout */
-  --mono:      'IBM Plex Mono', monospace;
   --r:         10px;
   --r-sm:      6px;
   --sidebar-w: 168px;
   --panel-r:   172px;
   --topbar-h:  44px;
   --botbar-h:  26px;
-  --scanline:  rgba(120,177,90,.018);
-  --head-bg:   rgba(120,177,90,.09);
-  --head-border: rgba(120,177,90,.12);
 }
 
 /* ─── Mood overrides ─────────────────────────────────────────────────────── */
